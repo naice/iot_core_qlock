@@ -113,11 +113,13 @@ namespace iot_core_qlock.ViewModel.Clock
         {
             if (IsActive) return;
             IsActive = true;
-            DateTime dtTest = DateTime.Now;
+            // uncommit test...
+            // DateTime dtTest = DateTime.Now;
             await Task.Run(async () => {
                 while (IsActive)
                 {
-                    string sentence = ClockSentenceGenerator.GetSentenceFor(dtTest);
+                    //string sentence = ClockSentenceGenerator.GetSentenceFor(dtTest);
+                    string sentence = ClockSentenceGenerator.GetCurrentSentence();
                     if (CurrentClockSentence != sentence)
                     {
                         CurrentClockSentence = sentence;
@@ -125,7 +127,7 @@ namespace iot_core_qlock.ViewModel.Clock
                         await UpdateSegments(GetOthers(segments), false);
                         await UpdateSegments(segments, true);
                     }
-                    dtTest = dtTest.AddMinutes(1);
+                    //dtTest = dtTest.AddMinutes(1);
                     await Task.Delay(100);
                 }
             });
