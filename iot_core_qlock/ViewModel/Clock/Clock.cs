@@ -80,8 +80,6 @@ namespace iot_core_qlock.ViewModel.Clock
 
                         _ClockItemSource.Add(line);
                     }
-
-
                 }
 
                 return _ClockItemSource; }

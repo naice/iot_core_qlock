@@ -6,15 +6,50 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:iot_core_qlock.Controls"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:im="using:Microsoft.Xaml.Interactions.Media"
     RequestedTheme="Dark"
+    DataContext="{StaticResource Main}"
     mc:Ignorable="d">
 
     <Page.Resources>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <i:Interaction.Behaviors>
+        <ic:EventTriggerBehavior EventName="Loaded">
+            <ic:InvokeCommandAction Command="{Binding ViewLoaded}"/>
+        </ic:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
 
-        <controls:Qlock ItemHeight="96" ItemWidth="96" Background="Black" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="46" FontWeight="Light"/>
+    <Grid Background="Black" Tapped="Grid_Tapped">
+
+        <Grid>
+            <Image Source="/Assets/abstract_02.jpg" Stretch="UniformToFill" Opacity="0.4"/>
+
+            <ListView ItemsSource="{Binding RSSReader.ItemsSource}" HorizontalContentAlignment="Stretch" Width="1056" Height="960"
+                      IsItemClickEnabled="True" ItemClick="ListView_ItemClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding Image}" Width="120" Height="120"/>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock FontWeight="Light" FontSize="24" Text="{Binding Title}" Foreground="#ccc"/>
+                                <TextBlock FontSize="18" Text="{Binding Content}" Foreground="#ccc" TextWrapping="WrapWholeWords"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" FontSize="12" Text="{Binding Created}" Foreground="#aaa" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+            
+            <controls:Qlock x:Name="qlock"  ItemHeight="96" ItemWidth="96" Background="Black" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="46" FontWeight="Light"/>
+        </Grid>
 
     </Grid>
 </Page>

@@ -11,9 +11,33 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Border Opacity="{Binding IsActive, Converter={StaticResource QlockIsActiveToOpacityConverter}}" Width="96" Height="96">
+                    <Border Name="PART_Item" Width="96" Height="96" Background="Black">
+                        <!--
+                        <Border.Transform3D>
+                            <CompositeTransform3D x:Name="compositeTransform" RotationX="-90"/>
+                        </Border.Transform3D>
+                        <Border.Resources>
+                            <Storyboard x:Name="PART_FadeIn">
+                                <DoubleAnimation Storyboard.TargetName="compositeTransform" Storyboard.TargetProperty="RotationX" 
+                                                         To="0" Duration="0:0:0.700">
+                                    <DoubleAnimation.EasingFunction>
+                                        <BackEase EasingMode="EaseOut" Amplitude="0.7"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                            <Storyboard x:Name="PART_FadeOut">
+                                <DoubleAnimation Storyboard.TargetName="compositeTransform" Storyboard.TargetProperty="RotationX" 
+                                                         To="-90" Duration="0:0:0.700">
+                                    <DoubleAnimation.EasingFunction>
+                                        <BackEase EasingMode="EaseOut" Amplitude="0.7"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </Border.Resources>
+                        -->
                         <TextBlock Text="{Binding Text}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{TemplateBinding Foreground}" 
-                                            FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontStyle="{TemplateBinding FontStyle}" FontWeight="{TemplateBinding FontWeight}"/>
+                                   Opacity="{Binding IsActive, Converter={StaticResource QlockIsActiveToOpacityConverter}}"
+                                   FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontStyle="{TemplateBinding FontStyle}" FontWeight="{TemplateBinding FontWeight}"/>
                     </Border>
                 </DataTemplate>
             </Setter.Value>
@@ -22,10 +46,30 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:Qlock">
                     <Border
-                        Background="{TemplateBinding Background}"
+                        x:Name="PART_ContentBorder"
+                        Background="Transparent"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">
-                        <ItemsControl x:Name="Itemscontrol" ItemsSource="{Binding}" ItemTemplate="{TemplateBinding ItemTemplate}">
+                        <Border.Transform3D>
+                            <CompositeTransform3D x:Name="compositeTransform" ScaleX="0.5" ScaleY="0.5" CenterX="0.5" CenterY="0.5"/>
+                        </Border.Transform3D>
+                        <Border.Resources>
+                            <BackEase x:Name="easingFunctionIn" EasingMode="EaseOut" Amplitude="0.7"/>
+                            <BackEase x:Name="easingFunctionOut" EasingMode="EaseOut" Amplitude="0.7"/>
+                            <Storyboard x:Name="PART_FadeIn">
+                                <DoubleAnimation Storyboard.TargetName="compositeTransform" Storyboard.TargetProperty="ScaleX" 
+                                                 To="1" Duration="0:0:0.700" EasingFunction="{StaticResource easingFunctionIn}"/>
+                                <DoubleAnimation Storyboard.TargetName="compositeTransform" Storyboard.TargetProperty="ScaleY" 
+                                                 To="1" Duration="0:0:0.700" EasingFunction="{StaticResource easingFunctionIn}"/>
+                            </Storyboard>
+                            <Storyboard x:Name="PART_FadeOut">
+                                <DoubleAnimation Storyboard.TargetName="compositeTransform" Storyboard.TargetProperty="ScaleX" 
+                                                 To="0" Duration="0:0:0.700" EasingFunction="{StaticResource easingFunctionIn}"/>
+                                <DoubleAnimation Storyboard.TargetName="compositeTransform" Storyboard.TargetProperty="ScaleY" 
+                                                 To="0" Duration="0:0:0.700" EasingFunction="{StaticResource easingFunctionIn}"/>
+                            </Storyboard>
+                        </Border.Resources>
+                        <ItemsControl x:Name="PART_ItemsControl" ItemsSource="{Binding}" ItemTemplate="{TemplateBinding ItemTemplate}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsWrapGrid Orientation="Horizontal"/>
@@ -39,4 +83,21 @@
     </Style>
 
 
+
+    <Style TargetType="controls:RSSList" xmlns:local2="using:iot_core_qlock.Controls">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:RSSList">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ItemsControl>
+                            
+                        </ItemsControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
