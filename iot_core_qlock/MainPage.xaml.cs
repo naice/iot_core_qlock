@@ -27,21 +27,6 @@ namespace iot_core_qlock
         {
             this.InitializeComponent();
         }
-
-        private void Grid_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            qlock.Shown = false;
-            qlock.IsHitTestVisible = false;
-        }
-
-        private void ListView_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-        }
-
-        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            ViewModel.RSS.RSSItem item = e.ClickedItem as ViewModel.RSS.RSSItem;
-            Browser.Show(item.URIToSource, item.Title);
-        }
+        
     }
 }

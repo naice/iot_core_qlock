@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using iot_core_qlock.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,57 +12,65 @@ namespace iot_core_qlock.ViewModel.RSS
 {
     public class RSSReader : ViewModelBase
     {
-        public ObservableCollection<RSSItem> ItemsSource { get; set; }
-
-        public Uri FeedUri { get; private set; }
+        /// <summary>
+        /// Model.
+        /// </summary>
+        public SortedObservableCollection<RSSItem> ItemsSource { get; set; }
+        public TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(10);
 
         private SyndicationClient _SyndicationClient = new SyndicationClient();
-        private IRSSItemCreator _Creator;
+        private IRSSItemCreator[] _Creators;
         private Windows.UI.Core.CoreDispatcher _Dispatcher = null;
 
-        public RSSReader(Uri feedUri, IRSSItemCreator creator, Windows.UI.Core.CoreDispatcher dispatcher)
+        public RSSReader(IRSSItemCreator creator, Windows.UI.Core.CoreDispatcher dispatcher)
+            : this(new IRSSItemCreator[] { creator }, dispatcher)
+        {
+        }
+        public RSSReader(IEnumerable<IRSSItemCreator> creators, Windows.UI.Core.CoreDispatcher dispatcher)
         {
             _Dispatcher = dispatcher;
-            _Creator = creator;
-            ItemsSource = new ObservableCollection<RSSItem>();
-            FeedUri = feedUri;
+            _Creators = creators.ToArray();
+            ItemsSource = new SortedObservableCollection<RSSItem>(T=>T.Created.Ticks, SortedObservableCollectionSortDirection.DESC);
         }
 
         public async void StartAsync()
         {
-            var feed = await _SyndicationClient.RetrieveFeedAsync(FeedUri);
-
-            if (feed != null && feed.Items != null && feed.Items.Count > 0)
+            foreach (var creator in _Creators)
             {
-                foreach (var item in feed.Items)
+                var feed = await _SyndicationClient.RetrieveFeedAsync(creator.Url);
+
+                if (feed != null && feed.Items != null && feed.Items.Count > 0)
                 {
-                    Windows.UI.Core.DispatchedHandler handler = () => {
-                        bool isNew = false;
-                        RSSItem rssItem = ItemsSource.FirstOrDefault(A => A.Id == item.Id);
-                        if (rssItem == null)
+                    foreach (var item in feed.Items)
+                    {
+                        Windows.UI.Core.DispatchedHandler handler = () =>
                         {
-                            isNew = true;
-                            rssItem = new RSSItem()
+                            bool isNew = false;
+                            RSSItem rssItem = ItemsSource.FirstOrDefault(A => A.Id == item.Id);
+                            if (rssItem == null)
                             {
-                                Id = item.Id,
-                                Title = item.Title != null ? item.Title.Text : "",
-                            };
-                        }
-                        string rawContent = "";
-                        if (item.Content != null) rawContent = item.Content.Text;
-                        else if (item.Summary != null) rawContent = item.Summary.Text;
-                        rssItem.Created = item.PublishedDate.DateTime;
+                                isNew = true;
+                                rssItem = new RSSItem()
+                                {
+                                    Id = item.Id,
+                                    Source = creator.Name,
+                                    Title = item.Title?.Text ?? string.Empty,
+                                };
+                            }
+                            string rawContent = item.Content?.Text ?? item.Summary?.Text ?? string.Empty;
+                            rssItem.ContentRaw = rawContent ?? rssItem.ContentRaw;
+                            rssItem.Created = item.PublishedDate.DateTime;
 
-                        rssItem = _Creator.CreateItem(rssItem, item, rawContent);
+                            rssItem = creator.CreateItem(rssItem, item);
+                            if (isNew)
+                                ItemsSource.Add(rssItem);
+                        };
 
-                        if (isNew)
-                            ItemsSource.Add(rssItem);
-                    };
-
-                    if (!_Dispatcher.HasThreadAccess)
-                        await _Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, handler);
-                    else
-                        handler();
+                        if (!_Dispatcher.HasThreadAccess)
+                            await _Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, handler);
+                        else
+                            handler();
+                    }
                 }
             }
         }

@@ -10,10 +10,11 @@ namespace iot_core_qlock.Common
     /// <see cref="RaiseCanExecuteChanged"/> needs to be called whenever
     /// <see cref="CanExecute"/> is expected to return a different value.
     /// </summary>
-    public class RelayCommand : ICommand
+    public class RelayCommand<T> : ICommand 
+        where T : class
     {
         private readonly Action _execute;
-        private readonly Action<object> _executeParam;
+        private readonly Action<T> _executeParam;
         private readonly Func<bool> _canExecute;
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace iot_core_qlock.Common
         /// Creates a new command that can always execute.
         /// </summary>
         /// <param name="execute">The execution logic.</param>
-        public RelayCommand(Action<object> execute)
+        public RelayCommand(Action<T> execute)
             : this(execute, null)
         {
         }
@@ -55,12 +56,25 @@ namespace iot_core_qlock.Common
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
-        public RelayCommand(Action<object> execute, Func<bool> canExecute)
+        public RelayCommand(Action<T> execute, Func<bool> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
             _executeParam = execute;
             _canExecute = canExecute;
+        }
+
+        event EventHandler ICommand.CanExecuteChanged
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -86,7 +100,7 @@ namespace iot_core_qlock.Common
             if (_executeParam == null)
                 _execute();
             else
-                _executeParam(parameter);
+                _executeParam(parameter as T);
         }
 
         /// <summary>

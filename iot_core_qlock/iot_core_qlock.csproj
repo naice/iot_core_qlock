@@ -102,19 +102,22 @@
     <Compile Include="Browser.xaml.cs">
       <DependentUpon>Browser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\SortedObservableCollection.cs" />
     <Compile Include="Common\LinqToVisualTree.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Controls\Qlock.cs" />
     <Compile Include="Controls\RSSList.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="ValueConverter\QlockValueConverters.cs" />
+    <Compile Include="ValueConverter\VisibilityConverters.cs" />
     <Compile Include="ViewModel\Clock\Clock.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\Main\Main.cs" />
-    <Compile Include="ViewModel\RSS\IRSSItemCreater.cs" />
+    <Compile Include="ViewModel\RSS\IRSSItemCreator.cs" />
+    <Compile Include="ViewModel\RSS\RSSCreatorT3N.cs" />
     <Compile Include="ViewModel\RSS\RSSCreatorGolem.cs" />
     <Compile Include="ViewModel\RSS\RSSItem.cs" />
     <Compile Include="ViewModel\RSS\RSSReader.cs" />

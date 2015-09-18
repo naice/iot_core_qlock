@@ -10,14 +10,18 @@ namespace iot_core_qlock.ViewModel.RSS
 {
     public class RSSCreatorGolem : IRSSItemCreator
     {
-        public RSSItem CreateItem(RSSItem result, SyndicationItem item, string rawContent)
+        public string Name { get; } = "Golem";
+
+        public Uri Url { get; } = new Uri("http://rss.golem.de/rss.php?feed=RSS2.0", UriKind.Absolute);
+
+        public RSSItem CreateItem(RSSItem result, SyndicationItem item)
         {
             result.URIToSource = item.Id;
 
-            if (!string.IsNullOrEmpty(rawContent))
+            if (!string.IsNullOrEmpty(result.ContentRaw))
             {
                 HtmlDocument doc = new HtmlDocument();
-                doc.LoadHtml(rawContent);
+                doc.LoadHtml(result.ContentRaw);
                 foreach (HtmlNode link in doc.DocumentNode.Descendants("img"))
                 {
                     result.Image = link.Attributes["src"].Value; break;

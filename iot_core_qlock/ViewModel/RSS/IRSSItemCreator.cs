@@ -9,6 +9,8 @@ namespace iot_core_qlock.ViewModel.RSS
 {
     public interface IRSSItemCreator
     {
-        RSSItem CreateItem(RSSItem result, SyndicationItem item, string rawContent);
+        string Name { get; }
+        Uri Url { get; }
+        RSSItem CreateItem(RSSItem result, SyndicationItem item);
     }
 }

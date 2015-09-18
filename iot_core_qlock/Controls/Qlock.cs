@@ -102,21 +102,21 @@ namespace iot_core_qlock.Controls
         }
         private async void FadeIn()
         {
-            foreach (var s in GetItemStoryboards("PART_FadeIn"))
-            {
-                s?.Begin();
-                await Task.Delay(10);
-            }
-
             GetBorderStoryboard("PART_FadeIn")?.Begin();
+
+            //foreach (var s in GetItemStoryboards("PART_FadeIn"))
+            //{
+            //    s?.Begin();
+            //    await Task.Delay(10);
+            //}
         }
         private async void FadeOut()
         {
-            foreach (var s in GetItemStoryboards("PART_FadeOut"))
-            {
-                s?.Begin();
-                await Task.Delay(10);
-            }
+            //foreach (var s in GetItemStoryboards("PART_FadeOut"))
+            //{
+            //    s?.Begin();
+            //    await Task.Delay(10);
+            //}
 
             GetBorderStoryboard("PART_FadeOut")?.Begin();
         }

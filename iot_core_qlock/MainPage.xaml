@@ -12,43 +12,76 @@
     RequestedTheme="Dark"
     DataContext="{StaticResource Main}"
     mc:Ignorable="d">
-
-    <Page.Resources>
-    </Page.Resources>
-
+    
     <i:Interaction.Behaviors>
         <ic:EventTriggerBehavior EventName="Loaded">
             <ic:InvokeCommandAction Command="{Binding ViewLoaded}"/>
         </ic:EventTriggerBehavior>
     </i:Interaction.Behaviors>
 
-    <Grid Background="Black" Tapped="Grid_Tapped">
+    <Grid Background="Black">
+        
+        <i:Interaction.Behaviors>
+            <ic:EventTriggerBehavior EventName="Tapped">
+                <ic:InvokeCommandAction Command="{Binding QlockTapped}"/>
+            </ic:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
 
         <Grid>
-            <Image Source="/Assets/abstract_02.jpg" Stretch="UniformToFill" Opacity="0.4"/>
+            <Image Source="/Assets/abstract_02.jpg" Stretch="UniformToFill" Opacity="0.4" />
 
-            <ListView ItemsSource="{Binding RSSReader.ItemsSource}" HorizontalContentAlignment="Stretch" Width="1056" Height="960"
-                      IsItemClickEnabled="True" ItemClick="ListView_ItemClick">
+            <ListView ItemsSource="{Binding RSSReader.ItemsSource}" Width="1056" Height="960" IsItemClickEnabled="True" IsHoldingEnabled="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible" HorizontalContentAlignment="Stretch">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <i:Interaction.Behaviors>
+                    <ic:EventTriggerBehavior EventName="ItemClick">
+                        <ic:InvokeCommandAction Command="{Binding RSSItemClicked}"/>
+                    </ic:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="10">
+                        <Grid Margin="10" Background="#01000000">
+                            <i:Interaction.Behaviors>
+                                <ic:EventTriggerBehavior EventName="Holding">
+                                    <ic:InvokeCommandAction Command="{Binding RSSItemHolding, Source={StaticResource Main}}"/>
+                                </ic:EventTriggerBehavior>
+                            </i:Interaction.Behaviors>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{Binding Image}" Width="120" Height="120"/>
-                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                <TextBlock FontWeight="Light" FontSize="24" Text="{Binding Title}" Foreground="#ccc"/>
+                            <Image Source="{Binding Image}" Visibility="{Binding Image, Converter={StaticResource GenericVisibilityConverter}, ConverterParameter=echo}" Width="120" Height="120" Stretch="UniformToFill" VerticalAlignment="Top">
+                                <i:Interaction.Behaviors>
+                                    <ic:EventTriggerBehavior EventName="ImageFailed">
+                                        <ic:InvokeCommandAction Command="{Binding ImageLoadFailed}"/>
+                                    </ic:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
+                            </Image>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock FontWeight="Light" FontSize="24" Text="{Binding Title}" Foreground="#ccc" TextTrimming="CharacterEllipsis"/>
                                 <TextBlock FontSize="18" Text="{Binding Content}" Foreground="#ccc" TextWrapping="WrapWholeWords"/>
                             </StackPanel>
-                            <TextBlock Grid.Column="1" FontSize="12" Text="{Binding Created}" Foreground="#aaa" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                            <TextBlock FontSize="12" Foreground="#aaa" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                    <Run Text="{Binding Source}"/>
+                                    <Run Text="-"/>
+                                    <Run Text="{Binding Created}"/>
+                            </TextBlock>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
             
-            
-            <controls:Qlock x:Name="qlock"  ItemHeight="96" ItemWidth="96" Background="Black" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="46" FontWeight="Light"/>
+            <controls:Qlock x:Name="qlock" 
+                Shown="{Binding IsQlockShown, Source={StaticResource Main}}"
+                ItemHeight="96" ItemWidth="96" Background="Black" Foreground="White" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                FontSize="46" FontWeight="Light"/>
         </Grid>
 
     </Grid>

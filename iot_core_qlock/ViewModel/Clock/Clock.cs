@@ -38,28 +38,11 @@ namespace iot_core_qlock.ViewModel.Clock
     }
     public class ClockLine
     {
-        public List<ClockSegment> Segments { get; set; }
-        public ClockLine()
-        {
-            Segments = new List<ClockSegment>();
-        }
+        public List<ClockSegment> Segments { get; set; } = new List<ClockSegment>();
     }
     public class ClockData: IEnumerable<ClockSegment>
     {
         const string _ClockString = "ESKISTLFÜNFZEHNZWANZIGDREIVIERTELTGNACHVORJMHALBQZWÖLFPZWEINSIEBENKDREIRHFÜNFELFNEUNVIERWACHTZEHNRSBSECHSFMUHR";
-        static List<string> _ClockMatrix = new List<string>()
-        {
-            "ESKISTLFÜNF",
-            "ZEHNZWANZIG",
-            "DREIVIERTEL",
-            "TGNACHVORJM",
-            "HALBQZWÖLFP",
-            "ZWEINSIEBEN",
-            "KDREIRHFÜNF",
-            "ELFNEUNVIER",
-            "WACHTZEHNRS",
-            "BSECHSFMUHR"
-        };
 
         private List<ClockLine> _ClockItemSource;
         public List<ClockLine> ClockItemSource
@@ -69,15 +52,14 @@ namespace iot_core_qlock.ViewModel.Clock
                 if (_ClockItemSource == null)
                 {
                     _ClockItemSource = new List<ClockLine>();
-
-                    foreach (var str in _ClockMatrix)
+                    
+                    for (int i = 0; i < 10; i++)
                     {
                         var line = new ClockLine();
-                        foreach (var c in str)
+                        for (int j = 0; j < 11; j++)
                         {
-                            line.Segments.Add(new ClockSegment() { Text = c.ToString() });
+                            line.Segments.Add(new ClockSegment() { Text = _ClockString[i * 11 + j].ToString() });
                         }
-
                         _ClockItemSource.Add(line);
                     }
                 }
@@ -164,7 +146,7 @@ namespace iot_core_qlock.ViewModel.Clock
             foreach (var word in sentence.Split(' '))
             {
                 currIdx = _ClockString.IndexOf(word, currIdx);
-                if (currIdx == -1) throw new Exception(string.Format("SEGMENT '{0}' NOT FOUND, ERROR.", word));
+                if (currIdx == -1) throw new Exception($"SEGMENT '{word}' NOT FOUND, ERROR.");
                 for (int i = currIdx; i < currIdx+word.Length; i++)
                     segments.Add(this[i]);
             }

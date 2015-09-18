@@ -49,13 +49,14 @@
                         x:Name="PART_ContentBorder"
                         Background="Transparent"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                        <Border.Transform3D>
-                            <CompositeTransform3D x:Name="compositeTransform" ScaleX="0.5" ScaleY="0.5" CenterX="0.5" CenterY="0.5"/>
-                        </Border.Transform3D>
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        RenderTransformOrigin=".5,.5">
+                        <Border.RenderTransform>
+                            <ScaleTransform x:Name="compositeTransform" ScaleX="0" ScaleY="0" />
+                        </Border.RenderTransform>
                         <Border.Resources>
-                            <BackEase x:Name="easingFunctionIn" EasingMode="EaseOut" Amplitude="0.7"/>
-                            <BackEase x:Name="easingFunctionOut" EasingMode="EaseOut" Amplitude="0.7"/>
+                            <QuinticEase x:Name="easingFunctionIn" EasingMode="EaseOut" />
+                            <QuinticEase x:Name="easingFunctionOut" EasingMode="EaseOut" />
                             <Storyboard x:Name="PART_FadeIn">
                                 <DoubleAnimation Storyboard.TargetName="compositeTransform" Storyboard.TargetProperty="ScaleX" 
                                                  To="1" Duration="0:0:0.700" EasingFunction="{StaticResource easingFunctionIn}"/>
